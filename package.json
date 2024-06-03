@@ -1,0 +1,50 @@
+{
+  "name": "client",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@ethersproject/address": "^5.0.4",
+    "@ethersproject/contracts": "^5.0.4",
+    "@ethersproject/networks": "^5.0.3",
+    "@ethersproject/providers": "^5.0.8",
+    "@ethersproject/solidity": "^5.0.4",
+    "@sanity/client": "^3.0.3",
+    "@uniswap/sdk": "^3.0.3",
+    "@uniswap/token-lists": "^1.0.0-beta.34",
+    "ajv": "^8.13.0",
+    "ajv-formats": "^3.0.1",
+    "axios": "^1.7.2",
+    "ethers": "^5.5.4",
+    "graphql-request": "^7.0.1",
+    "next": "^12.3.4",
+    "node-cache": "^5.1.2",
+    "node-fetch": "^3.3.2",
+    "qs": "^6.12.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-icons": "^4.3.1",
+    "react-modal": "^3.14.4",
+    "react-spinners": "^0.11.0",
+    "uniswap-price": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "17.0.13",
+    "@types/node-cache": "^4.2.5",
+    "@types/react": "17.0.38",
+    "@types/react-modal": "^3.13.1",
+    "@typescript-eslint/eslint-plugin": "^7.7.0",
+    "@typescript-eslint/parser": "^7.7.0",
+    "autoprefixer": "^10.4.2",
+    "eslint": "8.56.0",
+    "eslint-config-next": "12.0.9",
+    "postcss": "^8.4.5",
+    "tailwindcss": "^3.0.18",
+    "ts-node": "^10.0.0",
+    "typescript": "5.1.6"
+  }
+}
