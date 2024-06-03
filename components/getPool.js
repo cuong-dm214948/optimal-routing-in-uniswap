@@ -112,7 +112,6 @@ const autorouter = async (sellToken, buyToken, amount) => {
 
         let {bestRoute, bestPrice} = await getBestPriceRoute(routes, tokenIn, tokenOut, relevantPools, amount);
 
-        console.log('Best price route:', bestRoute);
         return {bestRoute, bestPrice};
     } catch (error) {
         console.error('Error occurred:', error);
@@ -153,11 +152,12 @@ const findAllRoutes = (graph, start, end, path = []) => {
 
 const getBestPriceRoute = async (routes, tokenIn, tokenOut, relevantPools, amount) => {
     let bestRoute = null;
-    let bestPrice = Infinity;
+    let bestPrice = -Infinity; // Initialize to the smallest possible value to find the maximum
+
     for (let route of routes) {
         try {
             let price = await getRouteQuote(route, tokenIn, tokenOut, relevantPools, amount);
-            if (price < bestPrice) {
+            if (price > bestPrice) { // Compare to find the maximum price
                 bestPrice = price;
                 bestRoute = route;
             }
@@ -166,36 +166,26 @@ const getBestPriceRoute = async (routes, tokenIn, tokenOut, relevantPools, amoun
         }
     }
 
-
-    return {bestRoute,bestPrice};
+    return { bestRoute, bestPrice };
 }
 
+
 const getRouteQuote = async (route, tokenIn, tokenOut, relevantPools, amount) => {
-    const sellTokenDecimal = 18;
-    let amount1 = ethers.utils.parseUnits(amount, sellTokenDecimal);  // 1 WETH in wei
+    let token0 = route[0];
+        let token1 = route[1];
+        let token2 = route[2];
+      
+        let decimals0Promise = new ethers.Contract(token0, tokenAbi, provider).decimals();
+        let decimals1Promise = new ethers.Contract(token1, tokenAbi, provider).decimals();
+        let decimals2Promise = new ethers.Contract(token2, tokenAbi, provider).decimals();
 
-    for (let i = 0; i < route.length - 1; i++) {
-        let token0 = route[i];
-        let token1 = route[i + 1];
-
-        let pool = relevantPools.find(pool =>
-            (pool.token0.id === token0 && pool.token1.id === token1) ||
-            (pool.token1.id === token0 && pool.token0.id === token1)
-        );
-
-        let decimals0Promise = new ethers.Contract(pool.token0.id, tokenAbi, provider).decimals();
-        let decimals1Promise = new ethers.Contract(pool.token1.id, tokenAbi, provider).decimals();
-
-        let [decimals0, decimals1] = await Promise.all([decimals0Promise, decimals1Promise]);
-
+        let [decimals0, decimals1, decimals2] = await Promise.all([decimals0Promise, decimals1Promise, decimals2Promise ]);
+        
         decimals0 = Number(decimals0); // Ensure decimals are of type number
         decimals1 = Number(decimals1); // Ensure decimals are of type number
-
-        let data2 = await uniswapPrice.getExecutionPrice(token0, decimals0, token1, decimals1, amount1.toString());
-
-        amount1 = ethers.utils.parseUnits(data2, decimals1);     
-    }
-    return amount1;
+        decimals2 = Number(decimals2); 
+        let data3 = await uniswapPrice.getMidPriceViaExactToken(token0, decimals0, token2, decimals2, token1, decimals1);
+        return data3.base2quote; 
 }
 
 module.exports = { autorouter };

@@ -98,8 +98,9 @@ const Main = () => {
             const bestPrice1 = result?.bestPrice ?? 0;
 
             setBestRoute(bestRoute1);
-            console.log(bestRoute1);
+            console.log(bestRoute);
             setBestPrice(bestPrice1.toString());
+            console.log(bestPrice1)
 
             // Fetch token metadata for each token in the best route
             const tokenMetadataPromises = bestRoute1.map(async (token: string) => { // Explicitly define type as string
@@ -108,7 +109,7 @@ const Main = () => {
                 const tokenMetadata = tokenList.find((t: { address: string }) => t.address === token.toLowerCase());
                 if (tokenMetadata) {
                     return {
-                        id: tokenMetadata.id,
+                        id: token,
                         symbol: tokenMetadata.symbol
                     };
                 } else {
@@ -119,8 +120,7 @@ const Main = () => {
             // Wait for all token metadata promises to resolve
             const tokenMetadataResults = await Promise.all(tokenMetadataPromises);
             setTokenMetadataResults(tokenMetadataResults);
-
-            console.log(tokenMetadataResults);
+            console.log("symbol route ", tokenMetadataResults);
         } catch (error) {
             console.error('Error fetching price:', error);
         }
@@ -259,11 +259,14 @@ const Main = () => {
         {bestRoute.map((token, index) => {
             // Find the corresponding token metadata for the current token in the best route
             const tokenMetadata = tokenMetadataResults.find(meta => meta && meta.id === token);
+
             // Extract the symbol from the metadata if available
             const symbol = tokenMetadata ? tokenMetadata.symbol : "Unknown";
             // Return the JSX for displaying the token symbol
             return (
+              <ul>
                 <li key={index}>{symbol}</li>
+              </ul>
             );
         })}
     </ul>
